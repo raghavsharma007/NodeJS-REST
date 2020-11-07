@@ -3,21 +3,34 @@ const User = require('../models/user');
 
 const router = express.Router();
 
-router.get('/get', (req, res) => {
+router.get('/get', (req, res, next) => {
     res.send({method: 'GET'});
 })
 
-router.put('/put/:id', () => {
-    res.send({method: 'PUT'});
+router.delete('/delete/:id', (req, res, next) => {
+    User.findByIdAndRemove({_id: req.params.id})
+    .then((user) => {
+        res.send(user);
+    })
 })
 
-router.post('/post', (req, res) => {
+router.put('/put/:id', (req, res, next) => {
+    User.findByIdAndUpdate({_id: req.params.id}, req.body)
+    .then(() => {
+        User.findOne({_id: req.params.id})
+        .then((user) => {
+            res.send(user);
+        })
+    })
+})
+
+router.post('/post', (req, res, next) => {
     // var user = new User(req.body);
     // user.save();
     User.create(req.body)
     .then((user) => {
         res.send(user);
-    });
+    }).catch(next);
 })
 
 

@@ -12,6 +12,11 @@ mongoose.Promise = global.Promise;
 app.use(bodyParser.json());
 app.use('/api', routes);
 
+// Error handling
+app.use((err, req, res, next) => {
+    res.status(422).send({error: err.message});
+})
+
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`listening on port 3000`);
